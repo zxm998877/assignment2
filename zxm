@@ -1,0 +1,132 @@
+package a2;
+import java.sql.*; 
+import java.util.Scanner;
+
+public class MVC {
+
+	public static void main(String[] args) throws SQLException  { 
+		// TODO Auto-generated method stub
+		
+			  try {
+			   
+			   Connection conn = null;
+			   PreparedStatement s=null;
+			         ResultSet rs = null;
+
+			         conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db1?useSSL=false",
+			                 "root","zxm205016");
+
+
+			   System.out.println("Successful connect !");
+			   System.out.println("1--Add data ;  2--Search id ");
+			   Scanner scanner = new Scanner(System.in);
+			   String a = scanner.nextLine();
+			   System.out.print("Enter your choice:");
+			   
+
+
+			   if(a.equals ("1") ) {
+			   System.out.println("Insert the data to the table student's properties");
+
+
+			   
+
+			   System.out.print("please enter student's id: ");
+			   String id = scanner.nextLine();
+
+			   System.out.print("please enter student's name: ");
+			   String name = scanner.nextLine();
+			   
+			   System.out.print("please enter student's martic no: ");
+			   String mc = scanner.nextLine();
+			   
+			   System.out.print("please enter student's math mark: ");
+			   String math_mark = scanner.nextLine();
+
+			   System.out.print("please enter student's science mark: ");
+			   String science_mark = scanner.nextLine();
+
+			   
+			   String sql="INSERT INTO student"+"(id ,name ,mc,math_mark ,science_mark )"+"VALUES(?,?,?,?,?)";
+			   s = conn.prepareStatement(sql);
+			   s.setString(1, id);
+			   s.setString(2, name);
+			   s.setString(3, mc);
+			   s.setString(4, math_mark);
+			   s.setString(5, science_mark);
+			   s.executeUpdate();
+
+
+
+			      
+
+			      rs = s.executeQuery ("Select * from student"); 
+			      
+			      ResultSetMetaData rsmd =rs.getMetaData(); 
+			      int i =rsmd.getColumnCount( );
+
+			      for(int j=1; j<=i; j++) { 
+			       System.out.print(rsmd.getColumnName(j)+"\t"+"\t"); 
+			       System.out.print(""); 
+			      } 
+			      System.out.print("\n");
+			      
+			      while(rs.next( ) ) { 
+			       for(int j=1; j<=i; j++) 
+			       { 
+			        System.out.print (rs.getString( j)+"\t"+"\t"+"\t"); 
+			        System.out.print(""); 
+			       }
+			       System.out.print("\n");
+			      }
+
+
+
+
+			   }
+			   else if(a.equals("2")) {
+			    System.out.println("search the student id to the table student's properties");
+			    System.out.print("please enter student's id: ");
+			    String id = scanner.nextLine();
+
+			    String sql = "select * from student where id like ?";
+			    s = conn.prepareStatement(sql);
+			    s.setString(1, id);
+			     rs = s.executeQuery();
+
+
+			        System.out.println("---------------------------------------------------------------------");
+					System.out.println(" ");
+					System.out.println("ID" + "\t\t" + "Name" + "\t\t"+"Matric no" + "\t\t" + "Math mark" + "\t\t" + "Science mark");
+					System.out.println("---------------------------------------------------------------------");
+			              
+					
+			               if (rs.next()) {
+
+			                   int id1 = rs.getInt("id");
+			                   String name = rs.getString("name");
+			                   int mc1 = rs.getInt("mc");
+			                   String math_mark = rs.getString("math_mark");
+			                   String  science_mark = rs.getString("science_mark");
+
+
+
+			                   System.out.println(id + "\t\t" + name + "\t\t"+ mc + "\t\t" + math_mark + "\t\t\t" + science_mark);
+			       		}
+
+			   }
+
+
+
+			   }
+			  catch (Exception e) {
+			   e.printStackTrace();
+			  }
+
+
+
+
+
+		}
+	
+	}
